@@ -1,0 +1,30 @@
+#!/bin/sh /etc/rc.common
+
+START=99
+STOP=99
+
+IPV6_PREFIX=`ip -6 addr show dev wlan1 | grep global | awk 'BEGIN { FS = " " } { print $2 }' | awk 'BEGIN { FS = "/" } { print $1 }' | grep 2001: | awk 'BEGIN { FS = ":" } { print $1  ":" $2 ":" $3 ":" $4 }'`
+TARGET_LAN_IPV6_ADDRESS=$IPV6_PREFIX:8000::1
+
+start() {
+	# Check if target LAN IPv6 address already set
+	ip -6 addr show dev br-lan | grep global | awk 'BEGIN { FS = " " } { print $2 }' | awk 'BEGIN { FS = "/" } { print $1 }' | grep $TARGET_LAN_IPV6_ADDRESS > /dev/null
+
+	LAN_IPV6_SET=$?
+
+	if [ $LAN_IPV6_SET -eq 0 ] ; then
+		echo $TARGET_LAN_IPV6_ADDRESS already set
+	else
+		echo $TARGET_LAN_IPV6_ADDRESS not set yet
+		ip -6 addr add $TARGET_LAN_IPV6_ADDRESS/65 dev br-lan
+	fi
+}
+
+stop() {
+	ip -6 addr del $TARGET_LAN_IPV6_ADDRESS/65 dev br-lan
+}
+
+restart() {
+	stop "$@"
+	start "$@"
+}
