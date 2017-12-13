@@ -1,0 +1,47 @@
+#!/bin/sh /etc/rc.common
+
+source /etc/ipv6/route.conf
+
+START=99
+STOP=99
+
+LAN_INTF=br-lan
+VAR_RUN_IPV6_LAN_ROUTE=/var/run/ipv6-static-route.$LAN_INTF
+
+if [ -e $VAR_RUN_IPV6_LAN_ROUTE ] ; then
+	LAST_IPV6_LAN_ROUTE=`cat $VAR_RUN_IPV6_LAN_ROUTE`
+else
+	LAST_IPV6_LAN_ROUTE=""
+fi
+
+IPV6_PREFIX=`ip -6 addr show dev $LAN_INTF | grep global | awk 'BEGIN { FS = " " } { print $2 }' | awk 'BEGIN { FS = "/" } { print $1 }' | grep 2001: | awk 'BEGIN { FS = ":" } { print $1  ":" $2 ":" $3 ":" $4 }'`
+TARGET_LAN_IPV6_ROUTE=$IPV6_PREFIX:8000::/65
+
+start() {
+	# Check if target LAN IPv6 address already set
+	ip -6 route show dev $LAN_INTF | grep $TARGET_LAN_IPV6_ROUTE > /dev/null
+
+	LAN_IPV6_ROUTE_SET=$?
+
+	if [ $LAN_IPV6_ROUTE_SET -eq 0 ] ; then
+		echo $TARGET_LAN_IPV6_ROUTE already set
+	else
+		echo $TARGET_LAN_IPV6_ROUTE not set yet
+		ip -6 route add $TARGET_LAN_IPV6_ROUTE via $LAN_GATEWAY
+		echo $TARGET_LAN_IPV6_ROUTE > $VAR_RUN_IPV6_LAN_ROUTE
+
+	fi
+
+	if [ "$LAST_IPV6_LAN_ROUTE" != "" -a "$TARGET_LAN_IPV6_ROUTE" != "$LAST_IPV6_LAN_ROUTE" ] ; then
+		ip -6 route del $LAST_IPV6_LAN_ROUTE via $LAN_GATEWAY
+	fi
+}
+
+stop() {
+	ip -6 route del $TARGET_LAN_IPV6_ROUTE via $LAN_GATEWAY
+}
+
+restart() {
+	stop "$@"
+	start "$@"
+}
