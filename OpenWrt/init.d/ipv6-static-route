@@ -7,6 +7,7 @@ STOP=99
 
 LAN_INTF=br-lan
 VAR_RUN_IPV6_LAN_ROUTE=/var/run/ipv6-static-route.$LAN_INTF
+IPV6_PREFIX=66
 
 if [ -e $VAR_RUN_IPV6_LAN_ROUTE ] ; then
 	LAST_IPV6_LAN_ROUTE=`cat $VAR_RUN_IPV6_LAN_ROUTE`
@@ -15,7 +16,7 @@ else
 fi
 
 IPV6_PREFIX=`ip -6 addr show dev $LAN_INTF | grep global | awk 'BEGIN { FS = " " } { print $2 }' | awk 'BEGIN { FS = "/" } { print $1 }' | grep 2001: | awk 'BEGIN { FS = ":" } { print $1  ":" $2 ":" $3 ":" $4 }'`
-TARGET_LAN_IPV6_ROUTE=$IPV6_PREFIX:8000::/65
+TARGET_LAN_IPV6_ROUTE=$IPV6_PREFIX:8000::/$IPV6_PREFIX
 
 start() {
 	# Check if target LAN IPv6 address already set

@@ -6,6 +6,7 @@ STOP=99
 WAN_INTF=wlan1
 LAN_INTF=br-lan
 VAR_RUN_IPV6_LAN=/var/run/ipv6.$LAN_INTF
+IPV6_PREFIX=66
 
 if [ -e $VAR_RUN_IPV6_LAN ] ; then
 	LAST_IPV6_LAN=`cat $VAR_RUN_IPV6_LAN`
@@ -26,7 +27,7 @@ start() {
 		echo $TARGET_LAN_IPV6_ADDRESS already set
 	else
 		echo $TARGET_LAN_IPV6_ADDRESS not set yet
-		ip -6 addr add $TARGET_LAN_IPV6_ADDRESS/65 dev $LAN_INTF
+		ip -6 addr add $TARGET_LAN_IPV6_ADDRESS/$IPV6_PREFIX dev $LAN_INTF
 		echo $TARGET_LAN_IPV6_ADDRESS > $VAR_RUN_IPV6_LAN
 
 	fi
@@ -37,7 +38,7 @@ start() {
 }
 
 stop() {
-	ip -6 addr del $TARGET_LAN_IPV6_ADDRESS/65 dev $LAN_INTF
+	ip -6 addr del $TARGET_LAN_IPV6_ADDRESS/$IPV6_PREFIX dev $LAN_INTF
 }
 
 restart() {
