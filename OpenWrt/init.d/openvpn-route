@@ -1,0 +1,48 @@
+#!/bin/sh /etc/rc.common
+
+source /etc/openvpn/route.conf
+
+START=99
+STOP=99
+
+VAR_RUN_OPENVPN_ROUTE=/var/run/openvpn-route.$LAN_INTF
+
+if [ -e $VAR_RUN_OPENVPN_ROUTE ] ; then
+	LAST_OPENVPN_ROUTE=`cat $VAR_RUN_OPENVPN_ROUTE`
+else
+	LAST_OPENVPN_ROUTE=""
+fi
+
+IPV6_PREFIX=`ip -6 addr show dev $LAN_INTF | grep global | awk 'BEGIN { FS = " " } { print $2 }' | awk 'BEGIN { FS = "/" } { print $1 }' | grep 2001: | awk 'BEGIN { FS = ":" } { print $1  ":" $2 ":" $3 ":" $4 }'`
+TARGET_OPENVPN_IPV6_ROUTE=$IPV6_PREFIX:$OPENVPN_IPV6_SUBNET_PREFIX::/$IPV6_LAN_PREFIX_LEN
+
+start() {
+	# Check if OpenVPN route already exist
+	ip -6 route show dev $OPENVPN_DEV | grep $TARGET_OPENVPN_IPV6_ROUTE > /dev/null
+
+	OPENVPN_IPV6_ROUTE_SET=$?
+
+	if [ $OPENVPN_IPV6_ROUTE_SET -eq 0 ] ; then
+		echo $TARGET_OPENVPN_IPV6_ROUTE already set
+	else
+		echo $TARGET_OPENVPN_IPV6_ROUTE not set yet
+		ip -6 route add $TARGET_OPENVPN_IPV6_ROUTE dev $OPENVPN_DEV
+		echo $TARGET_OPENVPN_IPV6_ROUTE > $VAR_RUN_OPENVPN_ROUTE
+		uci set openvpn.myvpn.server_ipv6="$TARGET_OPENVPN_IPV6_ROUTE"
+		uci commit openvpn
+		/etc/init.d/openvpn reload
+	fi
+
+	if [ "$LAST_OPENVPN_ROUTE" != "" -a "$TARGET_OPENVPN_IPV6_ROUTE" != "$LAST_OPENVPN_ROUTE" ] ; then
+		ip -6 route del $LAST_OPENVPN_ROUTE dev $OPENVPN_DEV
+	fi
+}
+
+stop() {
+	ip -6 route del $TARGET_OPENVPN_IPV6_ROUTE dev $OPENVPN_DEV
+}
+
+restart() {
+	stop "$@"
+	start "$@"
+}

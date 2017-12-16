@@ -16,10 +16,10 @@ else
 fi
 
 IPV6_PREFIX=`ip -6 addr show dev $LAN_INTF | grep global | awk 'BEGIN { FS = " " } { print $2 }' | awk 'BEGIN { FS = "/" } { print $1 }' | grep 2001: | awk 'BEGIN { FS = ":" } { print $1  ":" $2 ":" $3 ":" $4 }'`
-TARGET_LAN_IPV6_ROUTE=$IPV6_PREFIX:8000::/$IPV6_PREFIX
+TARGET_LAN_IPV6_ROUTE=$IPV6_PREFIX:$LAN_IPV6_SUBNET_PREFIX::/$IPV6_LAN_PREFIX_LEN
 
 start() {
-	# Check if target LAN IPv6 address already set
+	# Check if LAN IPv6 route already set
 	ip -6 route show dev $LAN_INTF | grep $TARGET_LAN_IPV6_ROUTE > /dev/null
 
 	LAN_IPV6_ROUTE_SET=$?
