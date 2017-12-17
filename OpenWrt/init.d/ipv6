@@ -3,10 +3,14 @@
 START=99
 STOP=99
 
-WAN_INTF=wlan1
-LAN_INTF=br-lan
+source /etc/ipv6/route.conf
+
 VAR_RUN_IPV6_LAN=/var/run/ipv6.$LAN_INTF
-IPV6_PREFIX=66
+
+if [ "$WAN_INTF" == "" -o "$LAN_INTF" == "" -o "$IPV6_PREFIX" == "" ] ; then
+	printf "Please set variables WAN_INTF, LAN_INTF, and IPV6_PREFIX in file /etc/ipv6/route.conf\n"
+	exit 0
+fi
 
 if [ -e $VAR_RUN_IPV6_LAN ] ; then
 	LAST_IPV6_LAN=`cat $VAR_RUN_IPV6_LAN`
@@ -35,6 +39,12 @@ start() {
 	if [ "$LAST_IPV6_LAN" != "" -a "$TARGET_LAN_IPV6_ADDRESS" != "$LAST_IPV6_LAN" ] ; then
 		ip -6 addr del $LAST_IPV6_LAN dev $LAN_INTF
 	fi
+
+	# Remove old IPv6 address
+	OLD_LAN_IPV6_ADDRESSES=`ip -6 addr show dev $LAN_INTF | grep 2001: | grep -v $IPV6_PREFIX | awk 'BEGIN { FS = " " } { print $2 }'`
+	for old_ipv6_address in $OLD_LAN_IPV6_ADDRESSES; do
+		ip -6 addr del $old_ipv6_address dev $LAN_INTF
+	done
 }
 
 stop() {
