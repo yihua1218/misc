@@ -11,8 +11,8 @@ if [ "$CURRENT_IPV6_IP_ADDRESS" == "$LAST_DDNS_UPDATE_IP_ADDRESS" ] ; then
   echo "Same LAN IPv6 IP Address: $LAST_DDNS_UPDATE_IP_ADDRESS"
 else
   echo "LAN IPv6 IP Address changed, update to dns.he.net"
-  echo curl "https://dyn.dns.he.net/nic/update?hostname=$DDNS_HOSTNAME&password=$DDNS_PASSWORD&myip=$CURRENT_IPV6_IP_ADDRESS"
-  curl \"https://dyn.dns.he.net/nic/update?hostname=$DDNS_HOSTNAME&password=$DDNS_PASSWORD&myip=$CURRENT_IPV6_IP_ADDRESS\"
+  echo wget "https://dyn.dns.he.net/nic/update?hostname=$DDNS_HOSTNAME&password=$DDNS_PASSWORD&myip=$CURRENT_IPV6_IP_ADDRESS" -o /dev/null -O -
+  wget "https://dyn.dns.he.net/nic/update?hostname=$DDNS_HOSTNAME&password=$DDNS_PASSWORD&myip=$CURRENT_IPV6_IP_ADDRESS" -o /dev/null -O -
   RESULT=$?
   if [ $RESULT -eq 0 ] ; then
     echo $CURRENT_IPV6_IP_ADDRESS > $LAST_DDNS_UPDATE_IP_FILE
