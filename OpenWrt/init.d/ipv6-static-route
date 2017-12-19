@@ -29,6 +29,7 @@ start() {
 	else
 		echo $TARGET_LAN_IPV6_ROUTE not set yet
 		ip -6 route add $TARGET_LAN_IPV6_ROUTE via $LAN_GATEWAY
+    ip -6 route add $IPV6_PREFIX:$LAN_GATEWAY_POSTFIX via $LAN_GATEWAY
 		echo $TARGET_LAN_IPV6_ROUTE > $VAR_RUN_IPV6_LAN_ROUTE
 
 	fi
