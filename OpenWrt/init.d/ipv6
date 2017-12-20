@@ -7,8 +7,8 @@ source /etc/ipv6/route.conf
 
 VAR_RUN_IPV6_LAN=/var/run/ipv6.$LAN_INTF
 
-if [ "$WAN_INTF" == "" -o "$LAN_INTF" == "" -o "$IPV6_PREFIX" == "" ] ; then
-	printf "Please set variables WAN_INTF, LAN_INTF, and IPV6_PREFIX in file /etc/ipv6/route.conf\n"
+if [ "$WAN_INTF" == "" -o "$LAN_INTF" == "" -o "$IPV6_PREFIX_LEN" == "" ] ; then
+	printf "Please set variables WAN_INTF, LAN_INTF, and IPV6_PREFIX_LEN in file /etc/ipv6/route.conf\n"
 	exit 0
 fi
 
@@ -31,7 +31,7 @@ start() {
 		echo $TARGET_LAN_IPV6_ADDRESS already set
 	else
 		echo $TARGET_LAN_IPV6_ADDRESS not set yet
-		ip -6 addr add $TARGET_LAN_IPV6_ADDRESS/$IPV6_PREFIX dev $LAN_INTF
+		ip -6 addr add $TARGET_LAN_IPV6_ADDRESS/$IPV6_PREFIX_LEN dev $LAN_INTF
 		echo $TARGET_LAN_IPV6_ADDRESS > $VAR_RUN_IPV6_LAN
 
 	fi
@@ -48,7 +48,7 @@ start() {
 }
 
 stop() {
-	ip -6 addr del $TARGET_LAN_IPV6_ADDRESS/$IPV6_PREFIX dev $LAN_INTF
+	ip -6 addr del $TARGET_LAN_IPV6_ADDRESS/$IPV6_PREFIX_LEN dev $LAN_INTF
 }
 
 restart() {
