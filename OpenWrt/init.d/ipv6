@@ -18,12 +18,12 @@ else
 	LAST_IPV6_LAN=""
 fi
 
-IPV6_PREFIX=`ip -6 addr show dev $WAN_INTF | grep global | awk 'BEGIN { FS = " " } { print $2 }' | awk 'BEGIN { FS = "/" } { print $1 }' | grep 2001: | awk 'BEGIN { FS = ":" } { print $1  ":" $2 ":" $3 ":" $4 }'`
+IPV6_PREFIX=`ip -6 addr show dev $WAN_INTF | grep -v deprecated | grep global | awk 'BEGIN { FS = " " } { print $2 }' | awk 'BEGIN { FS = "/" } { print $1 }' | grep 2001: | awk 'BEGIN { FS = ":" } { print $1  ":" $2 ":" $3 ":" $4 }'`
 TARGET_LAN_IPV6_ADDRESS=$IPV6_PREFIX:8000::1
 
 start() {
 	# Check if target LAN IPv6 address already set
-	ip -6 addr show dev $LAN_INTF | grep global | awk 'BEGIN { FS = " " } { print $2 }' | awk 'BEGIN { FS = "/" } { print $1 }' | grep $TARGET_LAN_IPV6_ADDRESS > /dev/null
+	ip -6 addr show dev $LAN_INTF | grep -v deprecated | grep global | awk 'BEGIN { FS = " " } { print $2 }' | awk 'BEGIN { FS = "/" } { print $1 }' | grep $TARGET_LAN_IPV6_ADDRESS > /dev/null
 
 	LAN_IPV6_SET=$?
 
