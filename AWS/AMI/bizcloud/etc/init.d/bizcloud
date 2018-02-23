@@ -34,6 +34,10 @@ initdb(){
   createdb -h localhost -p 5432 -U postgres cloudmgr_test_db
   (cd ~/cloudsrc/manager/build/nodeapp; node tools/postgres/index.js)
   (cd ~/cloudsrc/manager/build/nodeapp; psql -h localhost -U postgres -d cloudmgr_test_db -a -f ./tools/postgres/sql/initData.sql)
+  mysql < /root/cloudsrc/license-server/src/mysql/sql/create_database_and_user.sql
+  mysql license < /root/cloudsrc/license-server/src/mysql/sql/license_schema_empty.sql
+  mysql license < /root/cloudsrc/license-server/src/mysql/sql/license_procedure.sql
+  mysql license < /root/cloudsrc/license-server/src/mysql/sql/license_schema_initial_data.sql
 }
 
 # See how we were called.
