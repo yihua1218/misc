@@ -5,13 +5,16 @@
 
 start() {
   service postgresql94 start
+  service mysqld start
   (cd /root/dynamodb; java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb) &
   /redis-stable/src/redis-server &
   (cd ~/cloudsrc/manager/build/nodeapp; ./dev-start.sh)&
 }
 
 stop(){
-
+  service postgresql94 stop
+  service mysqld stop
+  killall node
 }
 
 reload(){
