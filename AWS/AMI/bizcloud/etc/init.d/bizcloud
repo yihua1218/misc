@@ -18,7 +18,8 @@ stop(){
 }
 
 reload(){
-
+  stop
+  start
 }
 
 initdb(){
