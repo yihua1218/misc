@@ -3,12 +3,20 @@
 # Source function library.
 . /etc/rc.d/init.d/functions
 
+export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
 start() {
   service postgresql94 start
   service mysqld start
-  (cd /root/dynamodb; java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb) &
-  /redis-stable/src/redis-server &
-  (cd ~/cloudsrc/manager/build/nodeapp; ./dev-start.sh)&
+  (cd /root/dynamodb; java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb) >& /var/log/dynamodb.log &
+  /redis-stable/src/redis-server >& /var/log/redis.log &
+  (cd ~/cloudsrc/manager/build/nodeapp; ./dev-start.sh) >& /var/log/nodeapp.log &
+  (cd ~/cloudsrc/manager/build/nodeapp; node ./build/js/deviceAdapterServer-start.js) >& /var/log/da.log &
+  (cd ~/cloudsrc/manager/build/nodeapp; node ./build/js/deviceEventManager-start.js) >& /var/log/dev.log &
+  (cd ~/cloudsrc/manager/build/nodeapp; node ./build/js/timerDynamoJobs-start.js) >& /var/log/td.log &
+  (cd ~/cloudsrc/manager/build/nodeapp; node ./build/js/timerjobs-start.js) >& /var/log/tj.log &
+  (cd ~/cloudsrc/manager/build/nodeapp; node ./tools/simulator.js device.csv wss://localhost:8443) >& /var/log/sim.log &
+  (cd ~/cloudsrc; ./license-server/src/bin/www) >& /var/log/ls.log &
 }
 
 stop(){
