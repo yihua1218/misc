@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+start() {
+  service postgresql94 start
+  (cd /root/dynamodb; java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb) &
+  /redis-stable/src/redis-server &
+  (cd ~/cloudsrc/manager/build/nodeapp; ./dev-start.sh)&
+}
+
+stop(){
+
+}
+
+reload(){
+
+}
+
+initdb(){
+  createdb -h localhost -p 5432 -U postgres cloudmgr_test_db
+  (cd ~/cloudsrc/manager/build/nodeapp; node tools/postgres/index.js)
+  (cd ~/cloudsrc/manager/build/nodeapp; psql -h localhost -U postgres -d cloudmgr_test_db -a -f ./tools/postgres/sql/initData.sql)
+}
+
+# See how we were called.
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  status)
+        status -p "$pidfile" postmaster
+        script_result=$?
+        ;;
+  restart)
+        restart
+        ;;
+  condrestart|try-restart)
+        condrestart
+        ;;
+  reload)
+        reload
+        ;;
+  force-reload)
+        restart
+        ;;
+  initdb)
+        initdb
+        ;;
+  *)
+        echo $"Usage: $0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload|initdb|upgrade}"
+        exit 2
+esac
