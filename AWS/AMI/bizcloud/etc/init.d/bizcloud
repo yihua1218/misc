@@ -5,11 +5,21 @@
 
 export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
+build() {
+  export PATH=/usr/local/bin:$PATH
+  (cd ~/cloudsrc/manager/static; coffee i18n-import.coffee)
+  (cd ~/cloudsrc/manager; ./build.sh)
+}
+
 start_db() {
   service postgresql94 start
   service mysqld start
   (cd /root/dynamodb; java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb) >& /var/log/dynamodb.log &
   /redis-stable/src/redis-server >& /var/log/redis.log &
+}
+
+start_sim() {
+  (cd ~/cloudsrc/manager/build/nodeapp; node ./tools/switchSimulator.js wss://localhost:8443) >& /var/log/switch-sim.log &
 }
 
 start() {
@@ -27,6 +37,7 @@ stop(){
   service postgresql94 stop
   service mysqld stop
   killall node
+  killall java
 }
 
 reload(){
@@ -46,8 +57,14 @@ initdb(){
 
 # See how we were called.
 case "$1" in
+  build)
+        build
+        ;;
   start_db)
         start_db
+        ;;
+  start_sim)
+        start_sim
         ;;
   start)
         start
