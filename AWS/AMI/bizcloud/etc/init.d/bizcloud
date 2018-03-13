@@ -3,10 +3,14 @@
 # Source function library.
 . /etc/rc.d/init.d/functions
 
+export PATH=/usr/local/bin:$PATH
 export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
-build() {
-  export PATH=/usr/local/bin:$PATH
+setup() {
+  (cd ~/cloudsrc/manager; ./setup.sh)
+}
+
+build() {  
   (cd ~/cloudsrc/manager/static; coffee i18n-import.coffee)
   (cd ~/cloudsrc/manager; ./build.sh)
 }
@@ -15,7 +19,7 @@ start_db() {
   service postgresql94 start
   service mysqld start
   (cd /root/dynamodb; java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb) >& /var/log/dynamodb.log &
-  (/redis-stable/src/redis-server; /redis-stable/src/redis-cli CONFIG SET protected-mode no) >& /var/log/redis.log &
+  (/redis-stable/src/redis-server; sleep 3; /redis-stable/src/redis-cli CONFIG SET protected-mode no) >& /var/log/redis.log &
 }
 
 start_sim() {
@@ -58,6 +62,9 @@ initdb(){
 
 # See how we were called.
 case "$1" in
+  setup)
+        setup
+        ;;
   build)
         build
         ;;
