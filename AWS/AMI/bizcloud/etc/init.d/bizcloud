@@ -19,7 +19,8 @@ start_db() {
   service postgresql94 start
   service mysqld start
   (cd /root/dynamodb; java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb) >& /var/log/dynamodb.log &
-  (/redis-stable/src/redis-server; sleep 3; /redis-stable/src/redis-cli CONFIG SET protected-mode no) >& /var/log/redis.log &
+  /redis-stable/src/redis-server >& /var/log/redis.log &
+  (sleep 10; /redis-stable/src/redis-cli CONFIG SET protected-mode no)&
 }
 
 start_sim() {
