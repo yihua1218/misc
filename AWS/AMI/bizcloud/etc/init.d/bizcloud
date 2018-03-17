@@ -15,6 +15,17 @@ build() {
   (cd ~/cloudsrc/manager; ./build.sh)
 }
 
+migrate() {
+  (cd ~/cloudsrc/manager/build/nodeapp; node tools/migration.js) 
+}
+
+build_static() {
+  stop
+  (cd ~/cloudsrc/manager/static; coffee i18n-import.coffee)
+  (cd /root/cloudsrc/manager/static; grunt)
+  start
+}
+
 start_db() {
   service postgresql94 start
   service mysqld start
@@ -69,8 +80,17 @@ case "$1" in
   build)
         build
         ;;
+  build_static)
+  
+        build_static
+        ;;
   start_db)
         start_db
+        ;;
+  migrate)
+        stop
+        start_db
+        migrate
         ;;
   start_sim)
         start_sim
