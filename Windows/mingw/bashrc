@@ -1,0 +1,8 @@
+# .bahrc for mingw on Windows
+
+export PATH=$PATH:"/c/Program Files/Microsoft VS Code"
+export PATH=$PATH:"/c/Program Files/nodejs"
+export PATH=$PATH:"/c/Program Files/Amazon/AWSCLI"
+export PATH=$PATH:/c/ProgramData/chocolatey/bin
+export PATH=$PATH:~/AppData/Roaming/nvm
+export PATH=$PATH:~/AppData/Roaming/npm
