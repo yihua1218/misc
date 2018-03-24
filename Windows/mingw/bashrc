@@ -1,5 +1,6 @@
 # .bahrc for mingw on Windows
 
+export PATH=$PATH:/c/Python36
 export PATH=$PATH:"/c/Program Files/Microsoft VS Code"
 export PATH=$PATH:"/c/Program Files/nodejs"
 export PATH=$PATH:"/c/Program Files/Amazon/AWSCLI"
