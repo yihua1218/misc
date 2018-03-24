@@ -7,3 +7,5 @@ For developer who wants to develop Linux based software projects on the Windows,
 1. [Cygwin](http://cygwin.com/install.html)
 
 ## Setup Environment
+
+## Practice: build haproxy for Windows
