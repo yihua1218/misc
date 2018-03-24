@@ -4,6 +4,7 @@ export PATH=$PATH:/c/Python36
 export PATH=$PATH:"/c/Program Files/Microsoft VS Code"
 export PATH=$PATH:"/c/Program Files/nodejs"
 export PATH=$PATH:"/c/Program Files/Amazon/AWSCLI"
+export PATH=$PATH:"/c/Program Files/Java/jre1.8.0_161/bin"
 export PATH=$PATH:/c/ProgramData/chocolatey/bin
 export PATH=$PATH:~/AppData/Roaming/nvm
 export PATH=$PATH:~/AppData/Roaming/npm
