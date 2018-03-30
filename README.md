@@ -2,4 +2,5 @@
 
 ## Fish Shell
 
-1. [NVM fish wrapper](https://github.com/passcod/nvm-fish-wrapper)
+1. [The fish-shell plugin manager](https://github.com/fisherman/fisherman)
+2. [fish-shell nvm wrapper](https://github.com/fisherman/nvm)
