@@ -20,10 +20,8 @@ migrate() {
 }
 
 build_static() {
-  stop
   (cd ~/cloudsrc/manager/static; coffee i18n-import.coffee)
-  (cd /root/cloudsrc/manager/static; grunt)
-  start
+  (cd /root/cloudsrc/manager/static; grunt --force)
 }
 
 start_db() {
@@ -36,23 +34,35 @@ start_db() {
 
 start_sim() {
   (cd ~/cloudsrc/manager/build/nodeapp; node ./tools/switchSimulator.js wss://localhost:8443) >& /var/log/switch-sim.log &
+  (cd ~/cloudsrc/manager/build/nodeapp; node ./tools/simulator.js device.csv wss://localhost:8443) >& /var/log/sim.log &
 }
 
 start() {
   start_db
+  (cd ~/cloudsrc/manager/build/nodeapp; export LOG4JS_CONFIG=`pwd`/build/log4js.json; nodemon -e js,html webserver.js) >& /var/log/nodeapp.log &
+  start_sim
+}
+
+start_dev() {
   (cd ~/cloudsrc/manager/build/nodeapp; ./dev-start.sh) >& /var/log/nodeapp.log &
+}
+
+start_backend() {
   (cd ~/cloudsrc/manager/build/nodeapp; node ./build/js/deviceAdapterServer-start.js) >& /var/log/da.log &
   (cd ~/cloudsrc/manager/build/nodeapp; node ./build/js/deviceEventManager-start.js) >& /var/log/dev.log &
   (cd ~/cloudsrc/manager/build/nodeapp; node ./build/js/timerDynamoJobs-start.js) >& /var/log/td.log &
   (cd ~/cloudsrc/manager/build/nodeapp; node ./build/js/timerjobs-start.js) >& /var/log/tj.log &
-  (cd ~/cloudsrc/manager/build/nodeapp; node ./tools/simulator.js device.csv wss://localhost:8443) >& /var/log/sim.log &
   (cd ~/cloudsrc; ./license-server/src/bin/www) >& /var/log/ls.log &
 }
 
 stop(){
+  WEBSERVER_PIDS=`ps aux | grep webserver | awk '{ print $2 }'`
+  kill -9 $WEBSERVER_PIDS
+}
+
+stop_db() {
   service postgresql94 stop
   service mysqld stop
-  killall node
   killall java
   killall redis-server
 }
@@ -95,6 +105,12 @@ case "$1" in
   start_sim)
         start_sim
         ;;
+  start_dev)
+        start_dev
+        ;;
+  start_backend)
+        start_backend
+        ;;
   start)
         start
         ;;
@@ -121,6 +137,6 @@ case "$1" in
         initdb
         ;;
   *)
-        echo $"Usage: $0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload|initdb|upgrade}"
+        echo $"Usage: $0 {start_dev|start|start_backend|stop|status|restart|condrestart|try-restart|reload|force-reload|initdb|upgrade}"
         exit 2
 esac
