@@ -11,8 +11,11 @@ For developer who wants to develop Linux based software projects on the Windows,
 
 
 ## Setup node-gyp
+
+For install node-gyp, must install the windows-build-tools by using Administartor privilege. Run powershell as Administrator and use the following commands to install windows-build-tools and node-gyp
+
 ``` bash
-$ npm install --global --production windows-build-tools
+# npm install --global --production windows-build-tools
 $ npm install --global node-gyp
 ```
 
