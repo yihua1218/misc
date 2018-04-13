@@ -4,7 +4,14 @@ For developer who wants to develop Linux based software projects on the Windows,
 
 ## Install Softwares
 
-1. [Cygwin](http://cygwin.com/install.html)
+1. [Cygwin](http://cygwin.com/install.html), packages required: lynx
+2. [apt-cyg](https://github.com/transcode-open/apt-cyg), Apt-cyg, an apt-get like tool for Cygwin
+
+### Install packages via apt-cyg
+
+``` bash
+$ apt-cyg install wget curl
+```
 
 ## Setup Environment
 
