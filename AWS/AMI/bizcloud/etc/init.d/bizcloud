@@ -38,12 +38,16 @@ start_sim() {
 }
 
 start() {
+  (cd ~/cloudsrc/manager/build/nodeapp; node ./build/js/staticWebServer.js) >& /var/log/frontend.log &
+}
+
+start_nodemon() {
   start_db
   (cd ~/cloudsrc/manager/build/nodeapp; export LOG4JS_CONFIG=`pwd`/build/log4js.json; nodemon -e js,html webserver.js) >& /var/log/nodeapp.log &
   start_sim
 }
 
-start_dev() {
+start_backend_dev() {
   (cd ~/cloudsrc/manager/build/nodeapp; ./dev-start.sh) >& /var/log/nodeapp.log &
 }
 
@@ -57,6 +61,8 @@ start_backend() {
 
 stop(){
   WEBSERVER_PIDS=`ps aux | grep webserver | awk '{ print $2 }'`
+  kill -9 $WEBSERVER_PIDS
+  WEBSERVER_PIDS=`ps aux | grep staticWebServer | awk '{ print $2 }'`
   kill -9 $WEBSERVER_PIDS
 }
 
