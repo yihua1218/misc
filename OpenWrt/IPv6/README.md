@@ -54,6 +54,7 @@ Recovery by ipconfig command:
 
 ``` bash
 $ sudo ipconfig set en0 automatic-v6
+$ sudo ipconfig set en5 automatic-v6
 ```
 
 ### Related Discussions
