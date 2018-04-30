@@ -6,7 +6,7 @@
 
 ``` bash
 # ip tunnel add sit0 mode sit ttl 0 remote 10.84.0.1 local 10.84.0.14
-# ip link set dev sit0 up 
+# ip link set dev sit0 up
 ```
 
 ## Ubuntu - IPv6 Internet
@@ -16,6 +16,15 @@
 # ip link set dev sit1 up
 # ip -6 route add 2001:470:8a1c:8401::/64 dev sit1
 ```
+
+## Step by Step
+
+從剛把 WiTi 升級成 OpenWRT 17.01.4 並且 Factory Reset 後，到 LAN 都透過 IPv6inIPv6 Tunnel 連上 IPv6 網路的每一個步驟。
+
+1. 設定 Root Password
+2. 設定 WAN 連線：[Smartphone USB Tethering to an OpenWrt router](https://openwrt.org/docs/guide-user/network/wan/smartphone.usb.tethering)，連 iPhone 7 Plus 沒有成功。
+3. 設定 OpenVPN Client：[OpenVPN Client](https://openwrt.org/docs/guide-user/services/vpn/openvpn/client)
+4. 建立 IPv6inIPv6 Tunnel：[IPv6 Essentials](https://openwrt.org/docs/guide-user/network/ipv6/ipv6.essentials)
 
 ## Reference
 
