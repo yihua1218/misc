@@ -1,0 +1,9 @@
+# Amazon Machine Images
+
+使用 Amazon Machine Images 做為開發環境的原因是為了要確保所開發的應用程式，往後能夠順利地在 AWS 的 Lambda 或 EC2 環境上執行，而不會有其他環境因素造成應用程式無法正常運行。
+
+## Install and Setup SSH Server
+
+``` bash
+# yum install -y openssh-server
+```
