@@ -1,0 +1,1 @@
+docker run --name f2e -v home:/root -p 3000:3000 -p 8022:22 -it yihua1218/f2e:latest /bin/bash⏎

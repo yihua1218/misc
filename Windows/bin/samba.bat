@@ -1,0 +1,1 @@
+docker run -it --network bridge --name samba -e USERID=0 -e GROUPID=0 -v home:/mount --network host -d dperson/samba -s "home;/mount;yes;no"
