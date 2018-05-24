@@ -4,6 +4,22 @@
 
 ## Install and Setup SSH Server
 
+Install openssh-server package via yum command:
+
 ``` bash
 # yum install -y openssh-server
+```
+
+Modified /etc/ssh/sshd_config for allowing root login:
+
+``` conf
+PermitRootLogin yes
+#PermitRootLogin forced-commands-only
+PubkeyAuthentication yes
+```
+
+Startup SSH Server
+
+``` bash
+# /etc/init.d/sshd start
 ```
