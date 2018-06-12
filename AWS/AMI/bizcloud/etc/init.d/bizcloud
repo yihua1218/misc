@@ -1,5 +1,7 @@
 #!/bin/bash
 
+NUCLIAS_ROOT=~/bizcloud
+
 # Source function library.
 . /etc/rc.d/init.d/functions
 
@@ -7,21 +9,21 @@ export PATH=/usr/local/bin:$PATH
 export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
 setup() {
-  (cd ~/cloudsrc/manager; ./setup.sh)
+  (cd $NUCLIAS_ROOT/manager; ./setup.sh)
 }
 
 build() {  
-  (cd ~/cloudsrc/manager/static; coffee i18n-import.coffee)
-  (cd ~/cloudsrc/manager; ./build.sh)
+  (cd $NUCLIAS_ROOT/manager/static; coffee i18n-import.coffee)
+  (cd $NUCLIAS_ROOT/manager; ./build.sh)
 }
 
 migrate() {
-  (cd ~/cloudsrc/manager/build/nodeapp; node tools/migration.js) 
+  (cd $NUCLIAS_ROOT/manager/build/nodeapp; node tools/migration.js) 
 }
 
 build_static() {
-  (cd ~/cloudsrc/manager/static; coffee i18n-import.coffee)
-  (cd /root/cloudsrc/manager/static; grunt --force)
+  (cd $NUCLIAS_ROOT/manager/static; coffee i18n-import.coffee)
+  (cd $NUCLIAS_ROOT/manager/static; grunt --force)
 }
 
 start_db() {
@@ -33,30 +35,30 @@ start_db() {
 }
 
 start_sim() {
-  (cd ~/cloudsrc/manager/build/nodeapp; node ./tools/switchSimulator.js wss://localhost:8443) >& /var/log/switch-sim.log &
-  (cd ~/cloudsrc/manager/build/nodeapp; node ./tools/simulator.js device.csv wss://localhost:8443) >& /var/log/sim.log &
+  (cd $NUCLIAS_ROOT/manager/build/nodeapp; node ./tools/switchSimulator.js wss://localhost:8443) >& /var/log/switch-sim.log &
+  (cd $NUCLIAS_ROOT/manager/build/nodeapp; node ./tools/simulator.js device.csv wss://localhost:8443) >& /var/log/sim.log &
 }
 
 start() {
-  (cd ~/cloudsrc/manager/build/nodeapp; node ./build/js/staticWebServer.js) >& /var/log/frontend.log &
+  (cd $NUCLIAS_ROOT/manager/build/nodeapp; node ./build/js/staticWebServer.js) >& /var/log/frontend.log &
 }
 
 start_nodemon() {
   start_db
-  (cd ~/cloudsrc/manager/build/nodeapp; export LOG4JS_CONFIG=`pwd`/build/log4js.json; nodemon -e js,html webserver.js) >& /var/log/nodeapp.log &
+  (cd $NUCLIAS_ROOT/manager/build/nodeapp; export LOG4JS_CONFIG=`pwd`/build/log4js.json; nodemon -e js,html webserver.js) >& /var/log/nodeapp.log &
   start_sim
 }
 
 start_backend_dev() {
-  (cd ~/cloudsrc/manager/build/nodeapp; ./dev-start.sh) >& /var/log/nodeapp.log &
+  (cd $NUCLIAS_ROOT/manager/build/nodeapp; ./dev-start.sh) >& /var/log/nodeapp.log &
 }
 
 start_backend() {
-  (cd ~/cloudsrc/manager/build/nodeapp; node ./build/js/deviceAdapterServer-start.js) >& /var/log/da.log &
-  (cd ~/cloudsrc/manager/build/nodeapp; node ./build/js/deviceEventManager-start.js) >& /var/log/dev.log &
-  (cd ~/cloudsrc/manager/build/nodeapp; node ./build/js/timerDynamoJobs-start.js) >& /var/log/td.log &
-  (cd ~/cloudsrc/manager/build/nodeapp; node ./build/js/timerjobs-start.js) >& /var/log/tj.log &
-  (cd ~/cloudsrc; ./license-server/src/bin/www) >& /var/log/ls.log &
+  (cd $NUCLIAS_ROOT/manager/build/nodeapp; node ./build/js/deviceAdapterServer-start.js) >& /var/log/da.log &
+  (cd $NUCLIAS_ROOT/manager/build/nodeapp; node ./build/js/deviceEventManager-start.js) >& /var/log/dev.log &
+  (cd $NUCLIAS_ROOT/manager/build/nodeapp; node ./build/js/timerDynamoJobs-start.js) >& /var/log/td.log &
+  (cd $NUCLIAS_ROOT/manager/build/nodeapp; node ./build/js/timerjobs-start.js) >& /var/log/tj.log &
+  (cd $NUCLIAS_ROOT; ./license-server/src/bin/www) >& /var/log/ls.log &
 }
 
 stop(){
@@ -80,8 +82,8 @@ reload(){
 
 initdb(){
   createdb -h localhost -p 5432 -U postgres cloudmgr_test_db
-  (cd ~/cloudsrc/manager/build/nodeapp; node tools/postgres/index.js)
-  (cd ~/cloudsrc/manager/build/nodeapp; psql -h localhost -U postgres -d cloudmgr_test_db -a -f ./tools/postgres/sql/initData.sql)
+  (cd $NUCLIAS_ROOT/manager/build/nodeapp; node tools/postgres/index.js)
+  (cd $NUCLIAS_ROOT/manager/build/nodeapp; psql -h localhost -U postgres -d cloudmgr_test_db -a -f ./tools/postgres/sql/initData.sql)
   mysql < /root/cloudsrc/license-server/src/mysql/sql/create_database_and_user.sql
   mysql license < /root/cloudsrc/license-server/src/mysql/sql/license_schema_empty.sql
   mysql license < /root/cloudsrc/license-server/src/mysql/sql/license_procedure.sql
@@ -111,8 +113,8 @@ case "$1" in
   start_sim)
         start_sim
         ;;
-  start_dev)
-        start_dev
+  start_backend_dev)
+        start_backend_dev
         ;;
   start_backend)
         start_backend
@@ -143,6 +145,6 @@ case "$1" in
         initdb
         ;;
   *)
-        echo $"Usage: $0 {start_dev|start|start_backend|stop|status|restart|condrestart|try-restart|reload|force-reload|initdb|upgrade}"
+        echo $"Usage: $0 {start|start_backend|start_backend_dev|stop|status|restart|condrestart|try-restart|reload|force-reload|initdb|upgrade}"
         exit 2
 esac
