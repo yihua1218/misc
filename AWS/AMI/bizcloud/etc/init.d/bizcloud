@@ -61,6 +61,10 @@ start_backend() {
   (cd $NUCLIAS_ROOT; ./license-server/src/bin/www) >& /var/log/ls.log &
 }
 
+start_license() {
+  (cd ~/cloudsrc; ./license-server/src/bin/www) >& /var/log/ls.log &
+}
+
 stop(){
   WEBSERVER_PIDS=`ps aux | grep webserver | awk '{ print $2 }'`
   kill -9 $WEBSERVER_PIDS
@@ -80,10 +84,13 @@ reload(){
   start
 }
 
-initdb(){
+init_db(){
   createdb -h localhost -p 5432 -U postgres cloudmgr_test_db
   (cd $NUCLIAS_ROOT/manager/build/nodeapp; node tools/postgres/index.js)
   (cd $NUCLIAS_ROOT/manager/build/nodeapp; psql -h localhost -U postgres -d cloudmgr_test_db -a -f ./tools/postgres/sql/initData.sql)
+}
+
+init_license(){
   mysql < /root/cloudsrc/license-server/src/mysql/sql/create_database_and_user.sql
   mysql license < /root/cloudsrc/license-server/src/mysql/sql/license_schema_empty.sql
   mysql license < /root/cloudsrc/license-server/src/mysql/sql/license_procedure.sql
@@ -141,8 +148,11 @@ case "$1" in
   force-reload)
         restart
         ;;
-  initdb)
+  init_db)
         initdb
+        ;;
+  init_license)
+        init_license
         ;;
   *)
         echo $"Usage: $0 {start|start_backend|start_backend_dev|stop|status|restart|condrestart|try-restart|reload|force-reload|initdb|upgrade}"
