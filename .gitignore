@@ -1,3 +1,4 @@
 .AppleDouble
 dynamodb_local_latest.tar.gz
 .vscode/temp.sql
+.vscode/last.sql
