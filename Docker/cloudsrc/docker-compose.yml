@@ -1,0 +1,80 @@
+version: "3"
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:9
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: cloudmgr_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pass
+    volumes:
+        - data-volume:/var/lib/postgresql
+  redis:
+    container_name: redis
+    image: redis:4
+    restart: always
+    ports:
+      - 6379:6379
+    volumes:
+        - data-volume:/data
+  mysql_license:
+    container_name: mysql_license
+    image: mysql:5
+    restart: always
+    command: --sql_mode=""
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_DATABASE: license
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: 94301
+      MYSQL_ROOT_PASSWORD: pass
+    volumes:
+        - mysql-volume:/var/lib/mysql
+  mysql_ebiz:
+    container_name: mysql_ebiz
+    image: mysql:5
+    restart: always
+    command: --sql_mode=""
+    ports:
+      - 3307:3307
+    environment:
+      MYSQL_DATABASE: import_log
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: 94301
+      MYSQL_ROOT_PASSWORD: pass
+    volumes:
+        - ebiz-volume:/var/lib/mysql
+  dynamoDb:
+    container_name: dynamo
+    image: cnadiminti/dynamodb-local:latest
+    restart: always
+    ports:
+      - 8000:8000
+    volumes:
+        - data-volume:/dynamodb_local_db
+  mongo:
+    container_name: mongo
+    image: mongo:2.6
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_DATABASE: cloudmgr_db
+    volumes:
+        - data-volume:/data/db
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    restart: always
+    ports:
+      - 443:443
+    volumes:
+        - data-volume:/var/lib/nginx
+volumes:
+  data-volume:
+  mysql-volume:
+  ebiz-volume:

@@ -42,7 +42,7 @@ const result = {
 };
 
 Object.keys(dates).forEach((key) => {
-  result.data.push(dates[key]);
+  result.data.unshift(dates[key]);
 });
 
 console.log(result);

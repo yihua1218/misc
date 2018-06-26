@@ -24,3 +24,14 @@ for file in $FILES; do
 done
 
 node ~/bin/diff.js > /dev/null
+
+DATE=`date +%Y%m%d`
+
+FILES="$DATA_PATH/restful-api-$DATE.json $DATA_PATH/json-diff-$DATE.html $DATA_PATH/restful-api-diff.json"
+
+for file in $FILES; do
+  if [ -e $file ]; then
+    BASENAME=`basename $file`
+    aws s3 cp --profile yihua --acl public-read $file s3://nuclias.app/data/$BASENAME
+  fi
+done
