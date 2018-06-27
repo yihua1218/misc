@@ -2,3 +2,4 @@
 dynamodb_local_latest.tar.gz
 .vscode/temp.sql
 .vscode/last.sql
+Docker/cloudsrc/.vscode/temp.sql
