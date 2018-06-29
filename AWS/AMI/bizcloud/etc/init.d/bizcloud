@@ -65,6 +65,12 @@ start_license() {
   (cd ~/cloudsrc; ./license-server/src/bin/www) >& /var/log/ls.log &
 }
 
+local_dev() {
+  start_db
+  start_backend
+  start_backend_dev
+}
+
 stop(){
   WEBSERVER_PIDS=`ps aux | grep webserver | awk '{ print $2 }'`
   kill -9 $WEBSERVER_PIDS
@@ -154,7 +160,10 @@ case "$1" in
   init_license)
         init_license
         ;;
+  local_dev)
+        local_dev
+        ;;
   *)
-        echo $"Usage: $0 {start|start_backend|start_backend_dev|stop|status|restart|condrestart|try-restart|reload|force-reload|initdb|upgrade}"
+        echo $"Usage: $0 {local_dev|start|start_backend|start_backend_dev|stop|status|restart|condrestart|try-restart|reload|force-reload|initdb|upgrade}"
         exit 2
 esac
