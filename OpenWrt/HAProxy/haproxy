@@ -1,0 +1,12 @@
+#!/bin/sh
+
+PROCESS_COUNT=`ps | grep /usr/sbin/haproxy | grep -v grep | wc -l`
+DATETIME=`date +%Y%m%d%H%M%S`
+
+if [ $PROCESS_COUNT -eq 0 ]; then
+  echo restart haproxy
+  /etc/init.d/haproxy start
+  echo $DATETIME /etc/init.d/haproxy start >> /var/log/haproxy.log
+else
+  echo haproxy is running
+fi
