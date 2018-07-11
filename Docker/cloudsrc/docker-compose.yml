@@ -71,9 +71,16 @@ services:
     image: nginx:latest
     restart: always
     ports:
-      - 8443:443
+      - 9443:443
     volumes:
         - data-volume:/var/lib/nginx
+  kinesis:
+    container_name: kinesis
+    image: vsouza/kinesis-local
+    restart: always
+    ports:
+      - 4567:4567
+    command: --port 4567
 volumes:
   data-volume:
   mysql-volume:
