@@ -1,0 +1,16 @@
+# HAProxy on Raspberry Pi
+
+Install haproxy by using apt-get:
+
+``` bash
+$ sudo apt-get install haproxy
+...
+Setting up haproxy (1.7.5-2) ...
+Created symlink /etc/systemd/system/multi-user.target.wants/haproxy.service → /lib/systemd/system/haproxy.service.
+Processing triggers for libc-bin (2.24-11+deb9u3) ...
+Processing triggers for systemd (232-25+deb9u2) ...
+Processing triggers for rsyslog (8.24.0-1) ...
+$ haproxy -v
+HA-Proxy version 1.7.5-2 2017/05/27
+Copyright 2000-2017 Willy Tarreau <willy@haproxy.org>
+```
