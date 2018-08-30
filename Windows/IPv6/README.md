@@ -1,5 +1,19 @@
 # IPv6 on Windows
 
+建立在 Windows 上的 IPv6 測試環境。
+
+## 測試 IPv6
+
+``` cmd
+> ping -6 dns.hinet.net
+```
+
+``` cmd
+> netstat -rn
+```
+
+## MTU
+
 在家裡使用 IPv6 連線到 AWS 的 EC2 主機，可能需要調整 MTU。
 
 ``` cmd

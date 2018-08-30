@@ -2,6 +2,19 @@
 
 原本是想在 OpenWrt 用 OpenVPN 路由 LAN 的 IPv6 到 OpenVPN Server，可是目前 OpenWrt 上的 OpenVPN package 不支援 iroute-ipv6 選項，所以無法 LAN 的 IPv6 經由 OpenVPN 路由。所以只好採用另一個方法，OpenVPN tunnel 建立後，以 IPv6 in IPv4 的方式，將 OpenWrt LAN 的 IPv6 封包，經由 IPv6 in IPv4 的 tunnel 再經由 OpenVPN 建立的 IPv4 tunnel 串到支援 IPv6 的主機上。
 
+## Script
+
+腳本 ipv6-aws.sh 用於設定 OpenWrt 至 Tunnel Server 之間的 IPv6 in IPv6 Tunnel，設定檔儲存於 /etc/ipv6.conf 內：
+
+``` bash
+LOCAL=<local_ipv6_address>
+REMOTE=<remote_ipv6_address>
+REMOTE_SUBNET=default
+GATEWAY=<ipv6_default_gateway>
+TUNNEL_DEV=ip6ip6
+ROUTE_DEV=tun0
+```
+
 ## OpenWrt - LAN
 
 ``` bash
