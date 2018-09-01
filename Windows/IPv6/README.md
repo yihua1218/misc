@@ -24,7 +24,7 @@
 IPv4 似乎也需要設定 MTU
 
 ``` cmd
-> ping aws.hoebus.idv.tw -l 1554
+> ping -6 aws.hoebus.idv.tw -l 1554
 > netsh interface ipv4 set subinterface "Wi-Fi" mtu=1554 store=persistent
 ```
 
@@ -34,7 +34,7 @@ IPv4 似乎也需要設定 MTU
 
 ``` cmd
 > netsh interface ipv6 show prefixpolicies
->  netsh interface ipv6 set prefixpolicy ::ffff:0:0/96 60 4
+> netsh interface ipv6 set prefixpolicy ::ffff:0:0/96 60 4
 ```
 
 ### Reference
