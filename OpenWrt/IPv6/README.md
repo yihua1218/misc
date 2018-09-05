@@ -4,15 +4,15 @@
 
 ## Script
 
-腳本 ipv6-aws.sh 用於設定 OpenWrt 至 Tunnel Server 之間的 IPv6 in IPv6 Tunnel，設定檔儲存於 /etc/ipv6.conf 內：
+腳本 ipv6 用於設定 OpenWrt 至 Tunnel Server 之間的 IPv6 in IPv6 Tunnel，設定檔儲存於 /etc/ipv6.conf 內：
 
 ``` bash
-LOCAL=<local_ipv6_address>
-REMOTE=<remote_ipv6_address>
-REMOTE_SUBNET=default
-GATEWAY=<ipv6_default_gateway>
-TUNNEL_DEV=ip6ip6
+SERVER=<remote_ipv6_address>
+CLIENT=<local_ipv6_address>
+CLIENT_SUBNET<local_ipv6_subnet>
 ROUTE_DEV=tun0
+TUNNEL_DEV=ip6ip6
+TUNNEL_IPV6=<tunnel_ipv6_address>
 ```
 
 ## OpenWrt - LAN
